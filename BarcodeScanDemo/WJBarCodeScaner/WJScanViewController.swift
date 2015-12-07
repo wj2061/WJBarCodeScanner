@@ -33,7 +33,9 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
                                 AVMetadataObjectTypeDataMatrixCode        ]
         {
         didSet{
-            output.metadataObjectTypes = metadataObjectTypes
+            if input != nil{
+                output.metadataObjectTypes = metadataObjectTypes
+            }
         }
     }
     

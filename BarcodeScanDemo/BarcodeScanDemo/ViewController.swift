@@ -9,27 +9,22 @@
 import UIKit
 import AVFoundation
 
-
 class ViewController: WJScanViewController{
     @IBOutlet weak var messageLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        transparentArea = CGRect(x: view.center.x-150, y: 0, width: 300, height: 400)
-        scanColor = UIColor.cyanColor()
-//        metadataObjectTypes = [ AVMetadataObjectTypeQRCode]  // IF YOU only want to scan QRCode
-        
-        
+        transparentArea     = CGRect(x: view.center.x-100, y: view.center.y-200, width: 200, height: 200)
+        scanColor           = UIColor.redColor()
+        metadataObjectTypes = [ AVMetadataObjectTypeQRCode ]  // IF YOU only want to scan QRCode
     }
 
     override func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
-        print("22")
         if  let metadataObject = metadataObjects.first {
             let stringValue = (metadataObject as! AVMetadataMachineReadableCodeObject).stringValue
             print(stringValue)
             messageLabel.text = stringValue
-            //            session.stopRunning()
-
+//            session.stopRunning()
         }
     }
     
@@ -38,6 +33,5 @@ class ViewController: WJScanViewController{
         alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil ))
         presentViewController(alertView, animated: true , completion: nil)
     }
-
 }
 
