@@ -3,6 +3,9 @@
 If you only want to scan a barCode without dig into AVFoundtion,this is a good tool for you.    
 The WJBarCodeScanner keeps the scan process as simple as possible,and give you as much flexible as possible.
 
+#ScreenShot
+![image](https://github.com/wj2061/WJBarCodeScanner/blob/master/Screenshot/001.jpg)
+
 # QuickExample
 1.Create a subclass of  WJScanViewController.    
 2.Configure transparentArea,scanColor,metadataObjectTypes .    
