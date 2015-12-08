@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "WJBarCodeScanner"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "An easy to use barCodeScanner."
 
   # This description is used to generate tags and improve search results.
@@ -39,8 +39,8 @@ Pod::Spec.new do |s|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  s.license      = "MIT"
-  # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  # s.license        = "MIT"
+    s.license      = { :type => "MIT", :file => "LICENSE" }
 
 
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -53,8 +53,8 @@ Pod::Spec.new do |s|
   #  profile URL.
   #
 
-  # s.author             = { "wj2061" => "wj2061@163.com" }
-    Or just: s.author    = "wj2061"
+    s.author             = { "wj2061" => "wj2061@163.com" }
+  # Or just: s.author    = "wj2061"
   # s.authors            = { "wj2061" => "wj2061@163.com" }
   # s.social_media_url   = "http://twitter.com/wj2061"
 
@@ -80,7 +80,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/wj2061/WJBarCodeScanner.git", :tag => "0.0.1" }
+  s.source       = { :git => "https://github.com/wj2061/WJBarCodeScanner.git", :tag => "0.0.2" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -91,7 +91,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "WJBarCodeScanner/*""
+  s.source_files  = "WJBarCodeScanner/*"
   # s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
