@@ -9,16 +9,18 @@
 import UIKit
 import AVFoundation
 
+
 @IBDesignable
+public
 class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDelegate{    
     
-    let session = AVCaptureSession()
-    let output = AVCaptureMetadataOutput()
-    var input:AVCaptureDeviceInput?
+    public  let session = AVCaptureSession()
+    public  let output = AVCaptureMetadataOutput()
+    public  var input:AVCaptureDeviceInput?
 
     private var scanView :WJScanView?
     
-    var metadataObjectTypes = [ AVMetadataObjectTypeUPCECode,
+    public  var metadataObjectTypes = [ AVMetadataObjectTypeUPCECode,
                                 AVMetadataObjectTypeCode39Code,
                                 AVMetadataObjectTypeCode39Mod43Code ,
                                 AVMetadataObjectTypeEAN13Code ,
@@ -38,8 +40,10 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
     }
     
     @IBInspectable
+    public
     var scanColor:UIColor = UIColor.greenColor(){ didSet{  scanView?.scanColor = scanColor } }
     
+    public
     var transparentArea = CGRectZero{
         didSet{
             print("disSet transparentArea to \(transparentArea)")
@@ -52,7 +56,7 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
     }
     
 
-    override func viewDidLoad() {
+    override public  func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.clearColor()
         
@@ -91,14 +95,14 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override public func viewDidAppear(animated: Bool) {
         if input == nil{
             handleCameraWithoutAuth()
         }
     }
     
     //override in your subclass 
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
+    public  func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
         print("11")
         if  let metadataObject = metadataObjects.first {
             let stringValue = (metadataObject as! AVMetadataMachineReadableCodeObject).stringValue
@@ -107,12 +111,12 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
     }
     
     //Lock Orientations to Portrait
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+    public  override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         return .Portrait
     }
     
     //access to camera denied
-    func handleCameraWithoutAuth(){
+    public  func handleCameraWithoutAuth(){
         print("handleCameraWithoutAuth")
     }
     

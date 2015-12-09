@@ -64,7 +64,9 @@ class WJScanView: UIView {
                                     2)
         scanLine.contentMode = .ScaleAspectFill
         
-        let scanImage        = UIImage(named: "WJScanLine")!
+        let scanImage        = UIImage(named:"WJScanLine",
+                                    inBundle: NSBundle(forClass: self.classForCoder),
+               compatibleWithTraitCollection: nil)!
         scanLine.image       = scanImage.imageWithRenderingMode(.AlwaysTemplate)
         scanLine.tintColor   = scanColor
         self.addSubview(scanLine)
