@@ -47,7 +47,7 @@ class ViewController: WJScanViewController{
 
 # how to install
 
-##manual
+## 1 manual
 step1: Drop WJBarCodeScanner folder into your project.
 
 step2: Create a subclass of  WJScanViewController. 
@@ -57,8 +57,20 @@ import AVFoundation
 
 class ViewController: WJScanViewController{
 }
-
 ```
+## 2 cocoapods
+ step1:add the following line to your Podfile:    
+````
+platform :ios, '8.0'
+use_frameworks!
+pod 'WJBarCodeScanner'
+````
+
+  step2:import WJBarCodeScanner
+````swift
+import WJBarCodeScanner
+````
+
 
 
 
