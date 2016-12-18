@@ -7,7 +7,7 @@
 //
 
 import UIKit
-let kScanLineAnimateDuration:NSTimeInterval = 0.02
+let kScanLineAnimateDuration:TimeInterval = 0.02
 let kCornerStrokelength:CGFloat             = 15
 
 class WJScanView: UIView {
@@ -18,24 +18,24 @@ class WJScanView: UIView {
         }
     }
     var showScanLine = true
-    var scanColor = UIColor.redColor(){
+    var scanColor = UIColor.red{
         didSet{
             setNeedsDisplay()
             setNeedsLayout()
         }
     }
     
-    private var timer : NSTimer?
-    private var scanLine  = UIImageView()
+    fileprivate var timer : Timer?
+    fileprivate var scanLine  = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
     }
     
     deinit{
@@ -49,83 +49,89 @@ class WJScanView: UIView {
         if showScanLine{
             initScanLine()
             timer?.invalidate()
-            timer = NSTimer.scheduledTimerWithTimeInterval(kScanLineAnimateDuration,
+            timer = Timer.scheduledTimer(timeInterval: kScanLineAnimateDuration,
                                                            target: self,
-                                                           selector: "scan",
+                                                           selector: #selector(WJScanView.scan),
                                                            userInfo: nil,
                                                            repeats: true)
         }
     }
     
-    private func initScanLine(){
-        scanLine.frame = CGRectMake(transparentArea.origin.x,
-                                    transparentArea.origin.y,
-                                    transparentArea.width,
-                                    2)
-        scanLine.contentMode = .ScaleAspectFill
+    fileprivate func initScanLine(){
+        scanLine.frame = CGRect(x: transparentArea.origin.x,
+                                    y: transparentArea.origin.y,
+                                    width: transparentArea.width,
+                                    height: 2)
+        scanLine.contentMode = .scaleAspectFill
         
         let scanImage        = UIImage(named: "WJScanLine")!
-        scanLine.image       = scanImage.imageWithRenderingMode(.AlwaysTemplate)
+        scanLine.image       = scanImage.withRenderingMode(.alwaysTemplate)
         scanLine.tintColor   = scanColor
         self.addSubview(scanLine)
     }
     
     func scan(){
-        UIView.animateWithDuration(kScanLineAnimateDuration, animations: { () -> Void in
+        UIView.animate(withDuration: kScanLineAnimateDuration, animations: { () -> Void in
             var point = self.scanLine.center
-            if CGRectContainsRect(self.transparentArea, self.scanLine.frame){
-               point.y++
+            if self.transparentArea.contains(self.scanLine.frame){
+               point.y += 1
             }else {
-                point.y = CGRectGetMinY(self.transparentArea) + 1
+                point.y = self.transparentArea.minY + 1
             }
             self.scanLine.center = point
         })
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()
         
-        CGContextSetRGBFillColor(ctx, 40/255.0, 40/255.0, 40/255.0, 0.5)
-        CGContextFillRect(ctx, bounds)  //dim background
+        ctx?.setFillColor(red: 40/255.0, green: 40/255.0, blue: 40/255.0, alpha: 0.5)
+        ctx?.fill(bounds)  //dim background
         
-        CGContextClearRect(ctx, transparentArea)  // clear transparentArea
+        ctx?.clear(transparentArea)  // clear transparentArea
         
         let path = UIBezierPath(rect: transparentArea)
         path.lineWidth = 1
-        UIColor.whiteColor().setStroke()
+        UIColor.white.setStroke()
         path.stroke()
         
         addCornerLineWithContext(ctx!, rect: transparentArea)
     }
     
-    private func addCornerLineWithContext(ctx:CGContextRef,rect:CGRect){
-        CGContextSetLineWidth(ctx, 2)
-        let components = CGColorGetComponents(scanColor.CGColor)
-        CGContextSetRGBStrokeColor(ctx,  components[0], components[1], components[2], components[3])
+    fileprivate func addCornerLineWithContext(_ ctx:CGContext,rect:CGRect){
+        ctx.setLineWidth(2)
+        let components = scanColor.cgColor.components
+        ctx.setStrokeColor(red: (components?[0])!, green: (components?[1])!, blue: (components?[2])!, alpha: (components?[3])!)
         
-        let upLreftPoints = [CGPointMake(rect.origin.x, rect.origin.y+kCornerStrokelength),
+        let upLreftPoints = [CGPoint(x: rect.origin.x, y: rect.origin.y+kCornerStrokelength),
                              rect.origin,
-                             CGPointMake(rect.origin.x+kCornerStrokelength, rect.origin.y)]
-        CGContextAddLines(ctx, upLreftPoints, 3)
+                             CGPoint(x: rect.origin.x+kCornerStrokelength, y: rect.origin.y)]
+        ctx.addLines(between:upLreftPoints)
+//        CGContextAddLines(ctx, upLreftPoints, 3)
        
-        let upRightPoint = CGPointMake(CGRectGetMaxX(rect), rect.origin.y)
-        let upRightPoints = [CGPointMake(upRightPoint.x-kCornerStrokelength, upRightPoint.y),
+        let upRightPoint = CGPoint(x: rect.maxX, y: rect.origin.y)
+        let upRightPoints = [CGPoint(x: upRightPoint.x-kCornerStrokelength, y: upRightPoint.y),
                              upRightPoint,
-                             CGPointMake(upRightPoint.x, upRightPoint.y+kCornerStrokelength)]
-        CGContextAddLines(ctx, upRightPoints, 3)
+                             CGPoint(x: upRightPoint.x, y: upRightPoint.y+kCornerStrokelength)]
+        ctx.addLines(between:upRightPoints);
+//        CGContextAddLines(ctx, upRightPoints, 3)
         
-        let downLeftPoint = CGPointMake(rect.origin.x, CGRectGetMaxY(rect))
-        let downLeftPoints = [CGPointMake(downLeftPoint.x, downLeftPoint.y-kCornerStrokelength),
+        let downLeftPoint = CGPoint(x: rect.origin.x, y: rect.maxY)
+        let downLeftPoints = [CGPoint(x: downLeftPoint.x, y: downLeftPoint.y-kCornerStrokelength),
                               downLeftPoint,
-                              CGPointMake(downLeftPoint.x+kCornerStrokelength, downLeftPoint.y)]
-        CGContextAddLines(ctx, downLeftPoints, 3)
+                              CGPoint(x: downLeftPoint.x+kCornerStrokelength, y: downLeftPoint.y)]
+        ctx.addLines(between:downLeftPoints);
+
+//        CGContextAddLines(ctx, downLeftPoints, 3)
         
-        let downRightPoint = CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect))
-        let downRightPoints = [CGPointMake(downRightPoint.x-kCornerStrokelength, downRightPoint.y),
+        let downRightPoint = CGPoint(x: rect.maxX, y: rect.maxY)
+        let downRightPoints = [CGPoint(x: downRightPoint.x-kCornerStrokelength, y: downRightPoint.y),
                                downRightPoint,
-                               CGPointMake(downRightPoint.x, downRightPoint.y-kCornerStrokelength)]
-        CGContextAddLines(ctx, downRightPoints, 3)
+                               CGPoint(x: downRightPoint.x, y: downRightPoint.y-kCornerStrokelength)]
+        ctx.addLines(between:downRightPoints);
+
+//        CGContextAddLines(ctx, downRightPoints, 3)
         
-        CGContextStrokePath(ctx)
+        ctx.strokePath()
     }
 }

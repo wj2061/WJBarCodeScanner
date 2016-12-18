@@ -16,7 +16,7 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
     let output = AVCaptureMetadataOutput()
     var input:AVCaptureDeviceInput?
 
-    private var scanView :WJScanView?
+    fileprivate var scanView :WJScanView?
     
     var metadataObjectTypes = [ AVMetadataObjectTypeUPCECode,
                                 AVMetadataObjectTypeCode39Code,
@@ -40,25 +40,25 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
     }
     
     @IBInspectable
-    var scanColor:UIColor = UIColor.greenColor(){ didSet{  scanView?.scanColor = scanColor } }
+    var scanColor:UIColor = UIColor.green{ didSet{  scanView?.scanColor = scanColor } }
     
-    var transparentArea = CGRectZero{
+    var transparentArea = CGRect.zero{
         didSet{
             print("disSet transparentArea to \(transparentArea)")
             scanView?.transparentArea = transparentArea
-            output.rectOfInterest = CGRectMake(transparentArea.origin.y/view.frame.height,
-                                               transparentArea.origin.x/view.frame.width,
-                                               transparentArea.height/view.frame.height,
-                                               transparentArea.width/view.frame.width)
+            output.rectOfInterest = CGRect(x: transparentArea.origin.y/view.frame.height,
+                                               y: transparentArea.origin.x/view.frame.width,
+                                               width: transparentArea.height/view.frame.height,
+                                               height: transparentArea.width/view.frame.width)
         }
     }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clear
         
-        let device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
         do  {
             input = try AVCaptureDeviceInput(device: device)
@@ -67,7 +67,7 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
             return
         }
         
-        output.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
+        output.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
         
         session.sessionPreset = AVCaptureSessionPresetHigh
         session.addInput(input)
@@ -75,17 +75,17 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
         output.metadataObjectTypes = metadataObjectTypes
 
         let preview = AVCaptureVideoPreviewLayer(session: session)
-        preview.videoGravity = AVLayerVideoGravityResize
-        preview.frame = view.bounds
-        view.layer.insertSublayer(preview, atIndex: 0)
+        preview?.videoGravity = AVLayerVideoGravityResize
+        preview?.frame = view.bounds
+        view.layer.insertSublayer(preview!, at: 0)
         session.startRunning()
         
         scanView = WJScanView(frame: view.bounds)
         scanView!.scanColor = scanColor
-        view.insertSubview(scanView!, atIndex: 1)
+        view.insertSubview(scanView!, at: 1)
         
         //congifure transparentArea
-        if transparentArea == CGRectZero{
+        if transparentArea == CGRect.zero{
             transparentArea = CGRect(x: view.center.x-100, y: view.center.y-100, width: 200, height: 200)
         }else{
             let rect = transparentArea
@@ -93,24 +93,25 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         if input == nil{
             handleCameraWithoutAuth()
         }
     }
     
     //override in your subclass 
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
+    public func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
         print("11")
         if  let metadataObject = metadataObjects.first {
-            let stringValue = (metadataObject as! AVMetadataMachineReadableCodeObject).stringValue
-            print(stringValue)
+            if let stringValue = (metadataObject as! AVMetadataMachineReadableCodeObject).stringValue{
+                print(stringValue)
+            }
         }
     }
     
     //Lock Orientations to Portrait
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .Portrait
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        return .portrait
     }
     
     //access to camera denied
