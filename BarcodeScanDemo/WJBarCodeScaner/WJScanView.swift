@@ -11,14 +11,16 @@ let kScanLineAnimateDuration:TimeInterval = 0.02
 let kCornerStrokelength:CGFloat             = 15
 
 class WJScanView: UIView {
-    var transparentArea = CGRect(){
+    public var transparentArea = CGRect(){//area to be scanned
         didSet{
             setNeedsDisplay()
             setNeedsLayout()
         }
     }
-    var showScanLine = true
-    var scanColor = UIColor.red{
+    
+    public var isShowScanLine = true
+    
+    public var scanColor = UIColor.green{//scanLine's color
         didSet{
             setNeedsDisplay()
             setNeedsLayout()
@@ -45,15 +47,15 @@ class WJScanView: UIView {
     
     
     override func layoutSubviews() {
-       super.layoutSubviews()
-        if showScanLine{
+        super.layoutSubviews()
+        if isShowScanLine{
             initScanLine()
-            timer?.invalidate()
+            weak var weakSelf = self
             timer = Timer.scheduledTimer(timeInterval: kScanLineAnimateDuration,
-                                                           target: self,
-                                                           selector: #selector(WJScanView.scan),
-                                                           userInfo: nil,
-                                                           repeats: true)
+                                         target: weakSelf!,
+                                         selector: #selector(WJScanView.scan),
+                                         userInfo: nil,
+                                         repeats: true)
         }
     }
     
@@ -107,30 +109,24 @@ class WJScanView: UIView {
                              rect.origin,
                              CGPoint(x: rect.origin.x+kCornerStrokelength, y: rect.origin.y)]
         ctx.addLines(between:upLreftPoints)
-//        CGContextAddLines(ctx, upLreftPoints, 3)
        
         let upRightPoint = CGPoint(x: rect.maxX, y: rect.origin.y)
         let upRightPoints = [CGPoint(x: upRightPoint.x-kCornerStrokelength, y: upRightPoint.y),
                              upRightPoint,
                              CGPoint(x: upRightPoint.x, y: upRightPoint.y+kCornerStrokelength)]
         ctx.addLines(between:upRightPoints);
-//        CGContextAddLines(ctx, upRightPoints, 3)
         
         let downLeftPoint = CGPoint(x: rect.origin.x, y: rect.maxY)
         let downLeftPoints = [CGPoint(x: downLeftPoint.x, y: downLeftPoint.y-kCornerStrokelength),
                               downLeftPoint,
                               CGPoint(x: downLeftPoint.x+kCornerStrokelength, y: downLeftPoint.y)]
         ctx.addLines(between:downLeftPoints);
-
-//        CGContextAddLines(ctx, downLeftPoints, 3)
         
         let downRightPoint = CGPoint(x: rect.maxX, y: rect.maxY)
         let downRightPoints = [CGPoint(x: downRightPoint.x-kCornerStrokelength, y: downRightPoint.y),
                                downRightPoint,
                                CGPoint(x: downRightPoint.x, y: downRightPoint.y-kCornerStrokelength)]
         ctx.addLines(between:downRightPoints);
-
-//        CGContextAddLines(ctx, downRightPoints, 3)
         
         ctx.strokePath()
     }
