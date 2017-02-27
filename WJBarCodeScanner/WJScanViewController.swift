@@ -80,7 +80,6 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
         preview.videoGravity = AVLayerVideoGravityResize
         preview.frame = view.bounds
         view.layer.insertSublayer(preview, atIndex: 0)
-        session.startRunning()
         
         scanView = WJScanView(frame: view.bounds)
         scanView!.scanColor = scanColor
@@ -98,6 +97,8 @@ class WJScanViewController: UIViewController ,AVCaptureMetadataOutputObjectsDele
     override public func viewDidAppear(animated: Bool) {
         if input == nil{
             handleCameraWithoutAuth()
+        } else {
+            session.startRunning()
         }
     }
     
